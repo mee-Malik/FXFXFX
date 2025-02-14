@@ -1,14 +1,14 @@
-from tkinter import *  # Import everything from the tkinter library for creating a GUI
-from tkinter.colorchooser import askcolor  # Import the color chooser dialog
+from tkinter import *  # Импортируем все из библиотеки tkinter для создания графического интерфейса
+from tkinter.colorchooser import askcolor  # Импортируем диалог выбора цвета
 
 class Paint(object):
-    pen_size = 5.0  # Default pen size
-    color = 'black'  # Default color
+    pen_size = 5.0  # Размер пера по умолчанию
+    color = 'black'  # Цвет по умолчанию
 
     def __init__(self):
-        self.root = Tk()  # Create the main application window
+        self.root = Tk()  # Создаем основное окно приложения
 
-        # Create buttons for different drawing tools
+        # Создаем кнопки для различных инструментов рисования
         self.pen_button = Button(self.root, text='A pen', command=self.use_pen)
         self.pen_button.grid(row=0, column=0)
 
@@ -24,68 +24,68 @@ class Paint(object):
         self.clear_button = Button(self.root, text='Clear', command=self.clear_canvas)
         self.clear_button.grid(row=0, column=4)
 
-        # Create a slider to select the pen/brush size
+        # Создаем ползунок для выбора размера пера/кисти
         self.choose_size_button = Scale(self.root, from_=1, to=10, orient=HORIZONTAL, label='Size')
         self.choose_size_button.grid(row=0, column=5)
 
-        # Create a drawing canvas
+        # Создаем холст для рисования
         self.c = Canvas(self.root, bg='white', width=600, height=600)
         self.c.grid(row=1, columnspan=6)
 
-        self.setup()  # Set up initial parameters
-        self.root.mainloop()  # Start the main application loop
+        self.setup()  # Настраиваем начальные параметры
+        self.root.mainloop()  # Запускаем главный цикл приложения
 
     def setup(self):
-        self.old_x = None  # Stores the previous x-coordinate
-        self.old_y = None  # Stores the previous y-coordinate
-        self.line_width = self.choose_size_button.get()  # Get the current line width
-        self.color = self.color  # Set the current color
-        self.eraser_on = False  # Eraser mode is off by default
-        self.active_button = self.pen_button  # Set the active button (default: pen)
-        # Bind events to the canvas
-        self.c.bind('<B1-Motion>', self.paint)  # Handle mouse movement while the left button is pressed
-        self.c.bind('<ButtonRelease-1>', self.reset)  # Handle mouse button release
+        self.old_x = None  # Хранит предыдущее значение координаты x
+        self.old_y = None  # Хранит предыдущее значение координаты y
+        self.line_width = self.choose_size_button.get()  # Получаем текущий размер линии
+        self.color = self.color  # Устанавливаем текущий цвет
+        self.eraser_on = False  # Ластик выключен по умолчанию
+        self.active_button = self.pen_button  # Устанавливаем активную кнопку (по умолчанию ручка)
+        # Привязываем события к холсту
+        self.c.bind('<B1-Motion>', self.print)  # Обработка движения мыши при нажатой левой кнопке
+        self.c.bind('<ButtonRelease-1>', self.reset)  # Обработка отпускания левой кнопки мыши
 
     def use_pen(self):
-        self.activate_button(self.pen_button)  # Activate pen mode
+        self.activate_button(self.pen_button)  # Активируем режим ручки
 
     def use_brush(self):
-        self.activate_button(self.brush_button)  # Activate brush mode
+        self.activate_button(self.brush_button)  # Активируем режим кисти
 
     def choose_color(self):
-        self.eraser_on = False  # Disable eraser mode
-        self.color = askcolor(color=self.color)[1]  # Open the color selection dialog
+        self.eraser_on = False  # Выключаем режим ластика
+        self.color = askcolor(color=self.color)[1]  # Открываем диалог выбора цвета
 
     def use_eraser(self):
-        self.activate_button(self.eraser_button, eraser_mode=True)  # Activate eraser mode
+        self.activate_button(self.eraser_button, eraser_mode=True)  # Активируем режим ластика
 
     def clear_canvas(self):
-        self.c.delete("all")  # Delete all elements on the canvas
+        self.c.delete("all")  # Удаляет все элементы на холсте
 
     def activate_button(self, some_button, eraser_mode=False):
-        # Configure active buttons
-        self.active_button.config(relief=RAISED)  # Remove the pressed effect from the previous button
-        some_button.config(relief=SUNKEN)  # Apply the pressed effect to the current button
-        self.active_button = some_button  # Set the current active button
-        self.eraser_on = eraser_mode  # Set eraser mode
+        # Настраивает активные кнопки
+        self.active_button.config(relief=RAISED)  # Убираем эффект нажатия с предыдущей кнопки
+        some_button.config(relief=SUNKEN)  # Применяем эффект нажатия к текущей кнопке
+        self.active_button = some_button  # Устанавливаем текущую активную кнопку
+        self.eraser_on = eraser_mode  # Устанавливаем режим ластика
 
-    def paint(self, event):
-        # Handles drawing on the canvas
-        self.line_width = self.choose_size_button.get()  # Get the current line width
-        paint_color = 'white' if self.eraser_on else self.color  # Set the color depending on the mode (eraser or normal)
-        if self.old_x and self.old_y:  # Check if previous coordinates exist
-            # Draw a line on the canvas
+    def print(self, event):
+        # Обрабатывает рисование на холсте
+        self.line_width = self.choose_size_button.get()  # Получаем текущий размер линии
+        paint_color = 'white' if self.eraser_on else self.color  # Устанавливаем цвет в зависимости от режима (ластик или не ластик)
+        if self.old_x and self.old_y:  # Проверяем, если предыдущие координаты существуют
+            # Рисуем линию на холсте
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
                                width=self.line_width, fill=paint_color,
                                capstyle=ROUND, smooth=True, splinesteps=36)
-        # Update previous coordinates
+        # Обновляем старые координаты
         self.old_x = event.x
         self.old_y = event.y
 
     def reset(self, event):
-        # Reset previous coordinates after releasing the mouse button
+        # Сбрасывает старые координаты после отпускания кнопки мыши
         self.old_x, self.old_y = None, None
 
-# Run the application
+# Запуск приложения
 if __name__ == '__main__':
     Paint()
