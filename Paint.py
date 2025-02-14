@@ -89,3 +89,6 @@ class Paint(object):
 # Run the application
 if __name__ == '__main__':
     Paint()
+
+
+## ЗДЕСЬ БЫЛ ДАУЛЕТ
